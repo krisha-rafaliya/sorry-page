@@ -3,57 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <title>Sorry Message 💌</title>
+
 <style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .card {
-        background: white;
-        padding: 30px;
-        border-radius: 20px;
-        width: 350px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        animation: fadeIn 1s ease-in-out;
-    }
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 2;
+}
 
-    h2 {
-        color: #ff4b5c;
-    }
+h2 {
+    color: #ff4b5c;
+}
 
-    .message {
-        font-size: 16px;
-        color: #333;
-        margin: 20px 0;
-        min-height: 80px;
-    }
+.message {
+    font-size: 16px;
+    color: #333;
+    margin: 20px 0;
+    min-height: 80px;
+    white-space: pre-line;
+}
 
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 25px;
-        background: #ff4b5c;
-        color: white;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: #ff4b5c;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-    button:hover {
-        background: #e8434f;
-        transform: scale(1.05);
-    }
+button:hover {
+    background: #e8434f;
+    transform: scale(1.05);
+}
 
-    @keyframes fadeIn {
-        from {opacity: 0; transform: translateY(20px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
+/* ❤️ Floating Hearts */
+.heart {
+    position: absolute;
+    color: #ff4b5c;
+    font-size: 20px;
+    animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+    0% {transform: translateY(100vh) scale(1);}
+    100% {transform: translateY(-10vh) scale(1.5);}
+}
 </style>
 </head>
 
@@ -62,27 +73,67 @@
 <div class="card">
     <h2>I'm Sorry 💔</h2>
     <div class="message" id="text"></div>
-    <button onclick="showPromise()">Click Me ❤️</button>
+    <button onclick="toggleMessage()">Click Me ❤️</button>
 </div>
 
-<script>
-    const msg = "Because of my full-day work schedule (2 PM to 11 PM IST), I couldn’t talk to you today. I’m really sorry for that. You are very special to me 💖";
+<!-- 🎵 Soft Music -->
+<audio id="bgMusic" autoplay loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mp3">
+</audio>
 
-    let i = 0;
-    function typeWriter() {
-        if (i < msg.length) {
-            document.getElementById("text").innerHTML += msg.charAt(i);
+<script>
+const originalMsg = "Because of my full-day work schedule (2 PM to 11 PM IST), I couldn’t talk to you today. I’m really sorry for that.";
+const promiseMsg = "I promise tomorrow I’ll make sure we talk properly ❤️\n\nYou mean a lot to me 💕";
+let showingPromise = false;
+let i = 0;
+
+// Typing Effect
+function typeWriter(text) {
+    document.getElementById("text").innerHTML = "";
+    i = 0;
+    function typing() {
+        if (i < text.length) {
+            document.getElementById("text").innerHTML += text.charAt(i);
             i++;
-            setTimeout(typeWriter, 40);
+            setTimeout(typing, 30);
         }
     }
+    typing();
+}
 
-    typeWriter();
+typeWriter(originalMsg);
 
-    function showPromise() {
-        document.getElementById("text").innerHTML = 
-        "I promise tomorrow I’ll make sure we talk properly ❤️<br><br>You mean a lot to me 💕";
+// Toggle Message
+function toggleMessage() {
+    if (!showingPromise) {
+        typeWriter(promiseMsg);
+    } else {
+        typeWriter(originalMsg);
     }
+    showingPromise = !showingPromise;
+}
+
+// Floating Hearts Generator
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+    heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 6000);
+}
+
+setInterval(createHeart, 500);
+
+// Fix autoplay issue (user interaction required in some browsers)
+document.body.addEventListener("click", () => {
+    document.getElementById("bgMusic").play();
+});
 </script>
 
 </body>
